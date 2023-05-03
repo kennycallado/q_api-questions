@@ -32,11 +32,38 @@ GET http://localhost:8032/health
 GET http://localhost:8003/auth/bypass/1
 Accept: application/json
 
-# {{{ example
+# {{{ questions
 
-GET http://localhost:8000/api/v1/example
+GET http://localhost:8000/api/v1/question
 Accept: application/json
-Authorization: Bearer <token>
-Content-type: application/json
+Authorization: Bearer 
+
+GET http://localhost:8000/api/v1/question/1
+Accept: application/json
+Authorization: Bearer 
+
+POST http://localhost:8000/api/v1/question
+Accept: application/json
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "question_type": "range",
+  "question": "What is the capital of India?"
+}
+
+PUT http://localhost:8000/api/v1/question/6
+Accept: application/json
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "question_type": "input",
+  "question": "What is the capital of India?"
+}
+
+GET http://localhost:8000/api/v1/question/6
+Accept: application/json
+Authorization: Bearer 
 
 # }}}
