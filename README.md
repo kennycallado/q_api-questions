@@ -1,4 +1,4 @@
-# q_api-base
+# questions_api-base
 
 ## Init a repo
 
@@ -6,33 +6,30 @@
 
 Acceder al repositorio en github y pulsar **Use this template**, **Create a new repository**. Una vez creado el repositorio puedes clonarlo localmente y seguir los siguientes pasos:
 
-1. 
+1. a
    ``` bash
    git checkout -b base
    ```
-1. 
+1. b
    ``` bash
-   git remote add base git@github.com:kennycallado/q_api-base.git
+   git remote add base git@github.com:kennycallado/questions_api-base.git
    ```
-1. 
+1. c
    ``` bash
    git fetch base && git merge base
    ```
-
-<!-- quizá mejor si no mantiene la rama
-1. 
+1. d **Quizá sobra**
    ``` bash
    git branch --set-upstream-to=base/main
    ```
-1. 
+1. e
    ``` bash
    git checkout main
    ```
-1. 
+1. Subir rama base a origin
    ``` bash
    git push origin base
    ```
--->
 
 ### Adaptar proyecto
 
@@ -40,17 +37,17 @@ Algunos ficheros deben ser revisados y actualizados para cada proyecto derivado 
 
 #### Raíz del proyecto
 
-- [ ] .env
+- [X] .env
   - Dirección de la base de datos
-- [ ] Cargo.toml
+- [X] Cargo.toml
   - Nombre del paquete
   - Revisar dependencias
-- [ ] Containerfile
+- [X] Containerfile
   - Nombre del paquete desde Cargo.toml
-- [ ] compose.yaml
+- [X] compose.yaml
   - Variables de entorno
   - Servicios extra
-- [ ] Rocket.toml
+- [X] Rocket.toml
   - Parámetros de configuración del proyecto
   - secret_key = `openssl rand -base64 32`
 
@@ -77,4 +74,8 @@ El directorio de servicios del módulo también puede contener por ejemplo, `hel
 
 ## TODO:
 
-- [ ] Something
+- [ ] Improve the README
+- [X] Implementar origin_url from config
+- [X] Implementar parámetro de configuración, migrations_run
+- [ ] Nuevo sistema para check claims
+- [X] Auto compile and build

@@ -1,0 +1,2 @@
+DROP TABLE questions CASCADE;
+-- DROP PUBLICATION questions_pub CASCADE;

@@ -5,8 +5,8 @@ version: "3.1"
 # 11,$s/SECRET_KEY="*.*"/SECRET_KEY=""
 #
 # Replace all the database credentials
-# 9s/entity/<...>/g
-# 11,$s/base:base@database\/base/entity:entity@database\/entity/g
+# 9s/entity/questions/g
+# 11,$s/base:base@database\/base/questions:questions@database\/questions/g
 
 services:
   database:
@@ -16,9 +16,9 @@ services:
     expose:
       - "5432:5432"
     environment:
-      POSTGRES_DB: base
-      POSTGRES_USER: base
-      POSTGRES_PASSWORD: base
+      POSTGRES_DB: questions
+      POSTGRES_USER: questions
+      POSTGRES_PASSWORD: questions
     command: [ "docker-entrypoint.sh", "-c", "wal_level=logical", "-c", "max_connections=300" ]
 
 # {{{ fcm
@@ -33,7 +33,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
+      - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
     depends_on:
       - database
 # }}}
@@ -51,7 +51,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
+      - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
     depends_on:
       - database
       - fcm_api 
@@ -69,7 +69,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
+      - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
     depends_on:
       - database
       - profiles_api
@@ -97,22 +97,22 @@ services:
 # }}}
 
 # {{{ questions - answers
-  # {{{ questions
-  questions_api:
-    image: kennycallado/q-api-answers:latest
-    ports:
-      - "8011:8000"
-    expose:
-      - "8011:8000"
-    environment:
-      - ROCKET_ADDRESS="0.0.0.0"
-      - ROCKET_PORT=8000
-      - ROCKET_SECRET_KEY=""
-      - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
-    depends_on:
-      - users_api
-  # }}}
+  # # {{{ questions
+  # questions_api:
+  #   image: kennycallado/q-api-answers:latest
+  #   ports:
+  #     - "8011:8000"
+  #   expose:
+  #     - "8011:8000"
+  #   environment:
+  #     - ROCKET_ADDRESS="0.0.0.0"
+  #     - ROCKET_PORT=8000
+  #     - ROCKET_SECRET_KEY=""
+  #     - ROCKET_MIGRATIONS_RUN=true
+  #     - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
+  #   depends_on:
+  #     - users_api
+  # # }}}
 
   # {{{ ansers
   answers_api:
@@ -126,9 +126,9 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
+      - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
     depends_on:
-      - questions_api
+      - users_api
   # }}}
 # }}}
 
@@ -145,10 +145,10 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
+      - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
       - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
     depends_on:
-      - questions_api
+      # - questions_api
       - answers_api
   # }}}
   
@@ -164,13 +164,13 @@ services:
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
   #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
+  #     - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
   #     - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
   #   depends_on:
   #     - questions_api
   #     - slides_api
   # # }}}
-  # 
+
   # # {{{ externals
   # externals_api:
   #   image: kennycallado/q-api-externals:latest
@@ -183,7 +183,7 @@ services:
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
   #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
+  #     - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
   #     - ROCKET_QUESTION_URL="http://questions_api:8000/api/v1/question"
   #   depends_on:
   #     - questions_api
@@ -204,7 +204,7 @@ services:
       - ROCKET_PORT=8000
       - ROCKET_SECRET_KEY=""
       - ROCKET_MIGRATIONS_RUN=true
-      - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
+      - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
       - ROCKET_SLIDE_URL="http://slides_api:8000/api/v1/slide"
       - ROCKET_FORM_URL="http://forms_api:8000/api/v1/form"
       - ROCKET_EXTERNAL_URL="http://externals_api:8000/api/v1/external"
@@ -223,7 +223,7 @@ services:
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
   #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
+  #     - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
   #   depends_on:
   #     - resources_api
   # # }}}
