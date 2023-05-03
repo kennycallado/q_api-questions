@@ -16,13 +16,19 @@ Acceder al repositorio en github y pulsar **Use this template**, **Create a new 
    ```
 1. c
    ``` bash
-   git fetch base && git merge base
-   ```
-1. d **Quizá sobra**
-   ``` bash
    git branch --set-upstream-to=base/main
    ```
-1. e
+1. 
+   ``` bash
+   git pull
+   ```
+
+   ``` bash
+   git pull --allow-unrelated-histories
+   ```
+
+<!-- quizá mejor si no mantiene la rama
+1. 
    ``` bash
    git checkout main
    ```
@@ -30,6 +36,7 @@ Acceder al repositorio en github y pulsar **Use this template**, **Create a new 
    ``` bash
    git push origin base
    ```
+-->
 
 ### Adaptar proyecto
 
