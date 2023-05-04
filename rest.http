@@ -45,6 +45,13 @@ GET http://localhost:8000/api/v1/question/1
 Accept: application/json
 Authorization: Bearer 
 
+POST http://localhost:8000/api/v1/question/multiple
+Accept: application/json
+Authorization: Bearer 
+Content-Type: application/json
+
+[ 1, 2 ]
+
 POST http://localhost:8000/api/v1/question
 Accept: application/json
 Authorization: Bearer 
