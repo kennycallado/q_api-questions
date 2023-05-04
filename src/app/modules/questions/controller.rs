@@ -14,6 +14,8 @@ pub fn routes() -> Vec<rocket::Route> {
         option_show,
         get_index,
         get_index_none,
+        post_multiple,
+        post_multiple_none,
         get_show,
         get_show_none,
         post_create,
@@ -49,10 +51,28 @@ pub async fn get_index_none() -> Status {
     Status::Unauthorized
 }
 
+#[post("/multiple", data = "<question_ids>", rank = 1)]
+pub async fn post_multiple(db: Db, claims: AccessClaims, question_ids: Json<Vec<i32>>) -> Result<Json<Vec<Question>>, Status> {
+    match claims.0.user.role.name.as_str() {
+        "admin" => show::get_multiple_admin(db, claims.0.user, question_ids.into_inner()).await,
+        "robot" => show::get_multiple_admin(db, claims.0.user, question_ids.into_inner()).await,
+        _ => {
+            println!("Error: get_show; Role not handled");
+            Err(Status::BadRequest)
+        }
+    }
+}
+
+#[post("/multiple", data = "<_question_ids>", rank = 2)]
+pub fn post_multiple_none(_question_ids: Json<Vec<i32>>) -> Status {
+    Status::Unauthorized
+}
+
 #[get("/<id>", rank = 101)]
 pub async fn get_show(db: Db, claims: AccessClaims, id: i32) ->  Result<Json<Question>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => show::get_show_admin(db, claims.0.user, id).await,
+        "robot" => show::get_show_admin(db, claims.0.user, id).await,
         _ => {
             println!("Error: get_show; Role not handled");
             Err(Status::BadRequest)
