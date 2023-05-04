@@ -49,7 +49,7 @@ pub async fn get_index_none() -> Status {
     Status::Unauthorized
 }
 
-#[get("/<id>", rank = 1)]
+#[get("/<id>", rank = 101)]
 pub async fn get_show(db: Db, claims: AccessClaims, id: i32) ->  Result<Json<Question>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => show::get_show_admin(db, claims.0.user, id).await,
@@ -60,7 +60,7 @@ pub async fn get_show(db: Db, claims: AccessClaims, id: i32) ->  Result<Json<Que
     }
 }
 
-#[get("/<_id>", rank = 2)]
+#[get("/<_id>", rank = 102)]
 pub async fn get_show_none(_id: i32) -> Status {
     Status::Unauthorized
 }
@@ -81,7 +81,7 @@ pub async fn post_create_none(_new_question: Json<NewQuestion>) -> Status {
     Status::Unauthorized
 }
 
-#[put("/<id>", data = "<question>", rank = 1)]
+#[put("/<id>", data = "<question>", rank = 101)]
 pub async fn put_update(db: Db, claims: AccessClaims, id: i32, question: Json<NewQuestion>) -> Result<Json<Question>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => update::put_update_admin(db, claims.0.user, id, question.into_inner()).await,
@@ -92,7 +92,7 @@ pub async fn put_update(db: Db, claims: AccessClaims, id: i32, question: Json<Ne
     }
 }
 
-#[put("/<_id>", data = "<_question>", rank = 2)]
+#[put("/<_id>", data = "<_question>", rank = 102)]
 pub async fn put_update_none(_id: i32, _question: Json<NewQuestion>) -> Status {
     Status::Unauthorized
 }
