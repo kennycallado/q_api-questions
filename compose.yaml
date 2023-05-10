@@ -97,9 +97,9 @@ services:
 # }}}
 
 # {{{ questions - answers
-  # # {{{ questions
+  # {{{ questions
   # questions_api:
-  #   image: kennycallado/q-api-answers:latest
+  #   image: kennycallado/q-api-questions:latest
   #   ports:
   #     - "8011:8000"
   #   expose:
@@ -109,14 +109,14 @@ services:
   #     - ROCKET_PORT=8000
   #     - ROCKET_SECRET_KEY=""
   #     - ROCKET_MIGRATIONS_RUN=true
-  #     - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
+  #     - ROCKET_DATABASES={questions={url="postgres://base:base@database/base"}}
   #   depends_on:
   #     - users_api
   # # }}}
 
   # {{{ ansers
   answers_api:
-    image: kennycallado/q-api-questions:latest
+    image: kennycallado/q-api-answers:latest
     ports:
       - "8012:8000"
     expose:
