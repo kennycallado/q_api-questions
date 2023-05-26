@@ -40,4 +40,54 @@ plan:
   - name: Heath checker
     request:
       url: '/health'
+    tags: [ health ]
+
+  - name: Post Index
+    request:
+      method: POST
+      url: '/api/v1/question'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+        Content-Type: application/json
+      body: '{ "question_type": "range", "question": "What is the capital of India?" }'
+    tags: [ post ]
+
+  - name: Get Index
+    request:
+      url: '/api/v1/question'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+    tags: [ index ]
+
+  - name: Get Show
+    request:
+      url: '/api/v1/question/{{ iteration }}'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+    tags: [ show ]
+
+  - name: Post Show multiple
+    request:
+      method: POST
+      url: '/api/v1/question/multiple'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+        Content-Type: application/json
+      body: '[ 1, 2 ]'
+    tags: [ multiple ]
+
+  - name: Put Show
+    request:
+      method: PUT
+      url: '/api/v1/question/{{ iteration }}'
+      headers:
+        Accept: application/json
+        Authorization: Bearer {{ TOKEN }}
+        Content-Type: application/json
+      body: '{ "question_type": "input", "question": "What is the capital of India?" }'
+    tags: [ put ]
 ---
