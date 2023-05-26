@@ -72,7 +72,6 @@ services:
       - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
     depends_on:
       - database
-      - profiles_api
   # }}}
 
   # {{{ auth
@@ -92,7 +91,6 @@ services:
       - ROCKET_USER_URL="http://users_api:8000/api/v1/user"
     depends_on:
       - users_api
-      - profiles_api
   # }}}
 # }}}
 
