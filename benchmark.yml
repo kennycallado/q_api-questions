@@ -50,7 +50,7 @@ plan:
         Accept: application/json
         Authorization: Bearer {{ TOKEN }}
         Content-Type: application/json
-      body: '{ "question_type": "range", "question": "What is the capital of India?" }'
+      body: '{ "question_type": "range", "question": "{{ iteration }}: What is the capital of India?" }'
     tags: [ post ]
 
   - name: Get Index
@@ -88,6 +88,6 @@ plan:
         Accept: application/json
         Authorization: Bearer {{ TOKEN }}
         Content-Type: application/json
-      body: '{ "question_type": "input", "question": "What is the capital of India?" }'
+      body: '{ "question_type": "input", "question": ">>> {{ iteration }}: What is the capital of India?" }'
     tags: [ put ]
 ---
