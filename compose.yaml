@@ -57,44 +57,44 @@ services:
 #       - fcm_api 
 #   # }}}
 #   
-#   # {{{ users
-#   users_api:
-#     image: kennycallado/q-api-users:latest
-#     ports:
-#       - "8002:8000"
-#     expose:
-#       - "8002:8000"
-#     environment:
-#       - ROCKET_ADDRESS="0.0.0.0"
-#       - ROCKET_PORT=8000
-#       - ROCKET_SECRET_KEY=""
-#       - ROCKET_MIGRATIONS_RUN=true
-#       - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
-#     depends_on:
-#       - database
-#       - profiles_api
-#   # }}}
+  # {{{ users
+  users_api:
+    image: kennycallado/q-api-users:latest
+    ports:
+      - "8002:8000"
+    expose:
+      - "8002:8000"
+    environment:
+      - ROCKET_ADDRESS="0.0.0.0"
+      - ROCKET_PORT=8000
+      - ROCKET_SECRET_KEY=""
+      - ROCKET_MIGRATIONS_RUN=true
+      - ROCKET_DATABASES={questions={url="postgres://questions:questions@database/questions"}}
+    depends_on:
+      - database
+      - profiles_api
+  # }}}
 
-#   # {{{ auth
-#   auth_api:
-#     image: kennycallado/q-api-auth:latest
-#     # extra_hosts:
-#     #   - "host.docker.internal:host-gateway"
-#     ports:
-#       - "8003:8000"
-#     expose:
-#       - "8003:8000"
-#     environment:
-#       - ROCKET_ADDRESS="0.0.0.0"
-#       - ROCKET_PORT=8000
-#       - ROCKET_SECRET_KEY=""
-#       - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile"
-#       - ROCKET_USER_URL="http://users_api:8000/api/v1/user"
-#     depends_on:
-#       - users_api
-#       - profiles_api
-#   # }}}
-# # }}}
+  # {{{ auth
+  auth_api:
+    image: kennycallado/q-api-auth:latest
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+    ports:
+      - "8003:8000"
+    expose:
+      - "8003:8000"
+    environment:
+      - ROCKET_ADDRESS="0.0.0.0"
+      - ROCKET_PORT=8000
+      - ROCKET_SECRET_KEY=""
+      - ROCKET_PROFILE_URL="http://profiles_api:8000/api/v1/profile"
+      - ROCKET_USER_URL="http://users_api:8000/api/v1/user"
+    depends_on:
+      - users_api
+      - profiles_api
+  # }}}
+# }}}
 
 # # {{{ questions - answers
 #   # {{{ questions
