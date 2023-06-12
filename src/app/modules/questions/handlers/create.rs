@@ -1,9 +1,9 @@
 use rocket::http::Status;
 use rocket::serde::json::Json;
 
-use crate::config::database::Db;
+use crate::database::connection::Db;
 
-use crate::app::providers::interfaces::helpers::claims::UserInClaims;
+use crate::app::providers::services::claims::UserInClaims;
 
 use crate::app::modules::questions::model::{Question, NewQuestion};
 use crate::app::modules::questions::services::repository as questions_repository;
