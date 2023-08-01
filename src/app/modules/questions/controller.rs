@@ -28,10 +28,13 @@ pub async fn option_all() -> Status {
     Status::Ok
 }
 
-#[get("/", rank = 1)]
-pub async fn get_index(db: Db, claims: AccessClaims) -> Result<Json<Vec<Question>>, Status> {
+#[get("/?<lang>", rank = 1)]
+pub async fn get_index(db: Db, claims: AccessClaims, lang: Option<String>) -> Result<Json<Vec<Question>>, Status> {
+    let locale;
+    if let Some(lang) = lang { locale = lang; } else { locale = "es".to_string(); };
+
     match claims.0.user.role.name.as_str() {
-        "admin" => index::get_index_admin(db, claims.0.user).await,
+        "admin" => index::get_index_admin(db, claims.0.user, locale).await,
         _ => {
             println!("Error: get_index; Role not handled");
             Err(Status::BadRequest)
@@ -44,11 +47,14 @@ pub async fn get_index_none() -> Status {
     Status::Unauthorized
 }
 
-#[post("/multiple", data = "<question_ids>", rank = 1)]
-pub async fn post_multiple(db: Db, claims: AccessClaims, question_ids: Json<Vec<i32>>) -> Result<Json<Vec<Question>>, Status> {
+#[post("/multiple?<lang>", data = "<question_ids>", rank = 1)]
+pub async fn post_multiple(db: Db, claims: AccessClaims, question_ids: Json<Vec<i32>>, lang: Option<String>) -> Result<Json<Vec<Question>>, Status> {
+    let locale;
+    if let Some(lang) = lang { locale = lang; } else { locale = "es".to_string(); };
+
     match claims.0.user.role.name.as_str() {
-        "admin" => show::get_multiple_admin(db, claims.0.user, question_ids.into_inner()).await,
-        "robot" => show::get_multiple_admin(db, claims.0.user, question_ids.into_inner()).await,
+        "admin" => show::get_multiple_admin(db, claims.0.user, question_ids.into_inner(), locale).await,
+        "robot" => show::get_multiple_admin(db, claims.0.user, question_ids.into_inner(), locale).await,
         _ => {
             println!("Error: get_show; Role not handled");
             Err(Status::BadRequest)
@@ -61,11 +67,14 @@ pub fn post_multiple_none(_question_ids: Json<Vec<i32>>) -> Status {
     Status::Unauthorized
 }
 
-#[get("/<id>", rank = 101)]
-pub async fn get_show(db: Db, claims: AccessClaims, id: i32) ->  Result<Json<Question>, Status> {
+#[get("/<id>?<lang>", rank = 101)]
+pub async fn get_show(db: Db, claims: AccessClaims, id: i32, lang: Option<String>) ->  Result<Json<Question>, Status> {
+    let locale;
+    if let Some(lang) = lang { locale = lang; } else { locale = "es".to_string(); };
+
     match claims.0.user.role.name.as_str() {
-        "admin" => show::get_show_admin(db, claims.0.user, id).await,
-        "robot" => show::get_show_admin(db, claims.0.user, id).await,
+        "admin" => show::get_show_admin(db, claims.0.user, id, locale).await,
+        "robot" => show::get_show_admin(db, claims.0.user, id, locale).await,
         _ => {
             println!("Error: get_show; Role not handled");
             Err(Status::BadRequest)

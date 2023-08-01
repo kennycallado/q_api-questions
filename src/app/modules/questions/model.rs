@@ -1,7 +1,5 @@
 use std::fmt;
 
-// use chrono::NaiveDateTime;
-
 use diesel::{sql_types::Text, pg::Pg, row::Row, expression::AsExpression, helper_types::AsExprOf, deserialize::FromSqlRow};
 use serde::{Deserialize, Serialize};
 
@@ -13,14 +11,12 @@ pub struct Question {
     pub id: i32,
     pub question_type: QuestionType,
     pub question: String,
-    // pub created_at: NaiveDateTime,
-    // pub updated_at: NaiveDateTime,
 }
 
-impl From<(i32, String, String)> for Question {
-    fn from(value: (i32, String, String)) -> Self {
+impl From<((i32, String), String)> for Question {
+    fn from(value: ((i32, String), String)) -> Self {
         Question {
-            id: value.0,
+            id: value.0.0,
             question_type: match value.1.as_ref() {
                 "checkbox" => QuestionType::Checkbox,
                 "input" => QuestionType::Input,
@@ -28,24 +24,40 @@ impl From<(i32, String, String)> for Question {
                 "range" => QuestionType::Range,
                 _ => panic!("Unknown question type"),
             },
-            question: value.2,
+            question: value.0.1,
         }
     }
 }
+
+// impl From<(i32, String, String)> for Question {
+//     fn from(value: (i32, String, String)) -> Self {
+//         Question {
+//             id: value.0,
+//             question_type: match value.1.as_ref() {
+//                 "checkbox" => QuestionType::Checkbox,
+//                 "input" => QuestionType::Input,
+//                 "radio" => QuestionType::Radio,
+//                 "range" => QuestionType::Range,
+//                 _ => panic!("Unknown question type"),
+//             },
+//             question: value.2,
+//         }
+//     }
+// }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Insertable, AsChangeset)]
 #[diesel(table_name = questions)]
 #[serde(crate = "rocket::serde")]
 pub struct NewQuestion {
     pub question_type: QuestionType,
-    pub question: String,
+    // pub question: String,
 }
 
 impl From<Question> for NewQuestion {
     fn from(question: Question) -> Self {
         NewQuestion {
             question_type: QuestionType::from(question.question_type),
-            question: question.question,
+            // question: question.question,
         }
     }
 }

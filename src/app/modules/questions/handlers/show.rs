@@ -8,8 +8,8 @@ use crate::app::providers::services::claims::UserInClaims;
 use crate::app::modules::questions::model::Question;
 use crate::app::modules::questions::services::repository as questions_repository;
 
-pub async fn get_show_admin(db: Db, _admin: UserInClaims, id: i32) -> Result<Json<Question>, Status> {
-    let question =  questions_repository::get_by_id(&db, id).await;
+pub async fn get_show_admin(db: Db, _admin: UserInClaims, id: i32, lang: String) -> Result<Json<Question>, Status> {
+    let question =  questions_repository::get_by_id(&db, id, lang).await;
 
     match question {
         Ok(question) => Ok(Json(question)),
@@ -17,8 +17,8 @@ pub async fn get_show_admin(db: Db, _admin: UserInClaims, id: i32) -> Result<Jso
     }
 }
 
-pub async fn get_multiple_admin(db: Db, _admin: UserInClaims, ids: Vec<i32>) -> Result<Json<Vec<Question>>, Status> {
-    let questions = questions_repository::get_questions_by_ids(&db, ids).await;
+pub async fn get_multiple_admin(db: Db, _admin: UserInClaims, ids: Vec<i32>, lang: String) -> Result<Json<Vec<Question>>, Status> {
+    let questions = questions_repository::get_questions_by_ids(&db, ids, lang).await;
 
     match questions {
         Ok(questions) => Ok(Json(questions)),
