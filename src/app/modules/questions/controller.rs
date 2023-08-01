@@ -9,8 +9,7 @@ use crate::app::modules::questions::model::{Question, NewQuestion};
 
 pub fn routes() -> Vec<rocket::Route> {
     routes![
-        option_index,
-        option_show,
+        option_all,
         get_index,
         get_index_none,
         post_multiple,
@@ -24,13 +23,8 @@ pub fn routes() -> Vec<rocket::Route> {
     ]
 }
 
-#[options("/")]
-pub async fn option_index() -> Status {
-    Status::Ok
-}
-
-#[options("/<_id>")]
-pub async fn option_show(_id: i32) -> Status {
+#[options("/<_..>")]
+pub async fn option_all() -> Status {
     Status::Ok
 }
 
