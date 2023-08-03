@@ -5,7 +5,8 @@ ALTER TABLE question_translations
   ADD COLUMN question_id INTEGER NOT NULL,
   ADD COLUMN locale VARCHAR(5) NOT NULL,
   ADD COLUMN question VARCHAR NOT NULL,
-  ADD CONSTRAINT fk_qt_question FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE;
+  ADD CONSTRAINT fk_qt_question FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE,
+  ADD CONSTRAINT questions_question_type_check CHECK (locale IN ('es', 'en', 'vlc'));
 
 INSERT INTO question_translations (question_id, locale, question) VALUES
   (1, 'en', 'How often do you feel confident in your ability to achieve your goals?'),
