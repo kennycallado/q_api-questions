@@ -37,9 +37,13 @@ GET http://localhost:8000/api/v1/question/
 Accept: application/json
 Authorization: Bearer 
 
+GET http://localhost:8000/api/v1/question/11?lang=vlc
+
 GET http://localhost:8000/api/v1/question/1
 Accept: application/json
 Authorization: Bearer 
+
+POST http://localhost:8000/api/v1/question/multiple?lang=en
 
 POST http://localhost:8000/api/v1/question/multiple
 Accept: application/json
@@ -55,7 +59,10 @@ Content-Type: application/json
 
 {
   "question_type": "range",
-  "question": "What is the capital of India?"
+  "content": {
+    "locale": "en",
+    "question": "What is the capital of India?"
+  }
 }
 
 PUT http://localhost:8000/api/v1/question/6
@@ -65,10 +72,13 @@ Content-Type: application/json
 
 {
   "question_type": "input",
-  "question": "What is the capital of India?"
+  "content": {
+    "locale": "es",
+    "question": "¿Cual es la capital de India?"
+  }
 }
 
-GET http://localhost:8000/api/v1/question/6
+GET http://localhost:8000/api/v1/question/6?lang=en
 Accept: application/json
 Authorization: Bearer 
 
