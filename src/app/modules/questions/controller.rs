@@ -7,6 +7,8 @@ use crate::database::connection::Db;
 use crate::app::modules::questions::handlers::{create, index, show, update};
 use crate::app::modules::questions::model::{Question, NewQuestion};
 
+use super::model::{QuestionWithContent, NewQuestionWithContent};
+
 pub fn routes() -> Vec<rocket::Route> {
     routes![
         option_all,
@@ -29,12 +31,13 @@ pub async fn option_all() -> Status {
 }
 
 #[get("/?<lang>", rank = 1)]
-pub async fn get_index(db: Db, claims: AccessClaims, lang: Option<String>) -> Result<Json<Vec<Question>>, Status> {
+pub async fn get_index(db: Db, claims: AccessClaims, lang: Option<String>) -> Result<Json<Vec<QuestionWithContent>>, Status> {
     let locale;
     if let Some(lang) = lang { locale = lang; } else { locale = "es".to_string(); };
 
     match claims.0.user.role.name.as_str() {
-        "admin" => index::get_index_admin(db, claims.0.user, locale).await,
+        "admin" |
+        "robot" => index::get_index_admin(db, claims.0.user, locale).await,
         _ => {
             println!("Error: get_index; Role not handled");
             Err(Status::BadRequest)
@@ -48,12 +51,12 @@ pub async fn get_index_none() -> Status {
 }
 
 #[post("/multiple?<lang>", data = "<question_ids>", rank = 1)]
-pub async fn post_multiple(db: Db, claims: AccessClaims, question_ids: Json<Vec<i32>>, lang: Option<String>) -> Result<Json<Vec<Question>>, Status> {
+pub async fn post_multiple(db: Db, claims: AccessClaims, question_ids: Json<Vec<i32>>, lang: Option<String>) -> Result<Json<Vec<QuestionWithContent>>, Status> {
     let locale;
     if let Some(lang) = lang { locale = lang; } else { locale = "es".to_string(); };
 
     match claims.0.user.role.name.as_str() {
-        "admin" => show::get_multiple_admin(db, claims.0.user, question_ids.into_inner(), locale).await,
+        "admin" |
         "robot" => show::get_multiple_admin(db, claims.0.user, question_ids.into_inner(), locale).await,
         _ => {
             println!("Error: get_show; Role not handled");
@@ -68,12 +71,12 @@ pub fn post_multiple_none(_question_ids: Json<Vec<i32>>) -> Status {
 }
 
 #[get("/<id>?<lang>", rank = 101)]
-pub async fn get_show(db: Db, claims: AccessClaims, id: i32, lang: Option<String>) ->  Result<Json<Question>, Status> {
+pub async fn get_show(db: Db, claims: AccessClaims, id: i32, lang: Option<String>) ->  Result<Json<QuestionWithContent>, Status> {
     let locale;
     if let Some(lang) = lang { locale = lang; } else { locale = "es".to_string(); };
 
     match claims.0.user.role.name.as_str() {
-        "admin" => show::get_show_admin(db, claims.0.user, id, locale).await,
+        "admin" |
         "robot" => show::get_show_admin(db, claims.0.user, id, locale).await,
         _ => {
             println!("Error: get_show; Role not handled");
@@ -88,7 +91,7 @@ pub async fn get_show_none(_id: i32) -> Status {
 }
 
 #[post("/", data = "<new_question>", rank = 1)]
-pub async fn post_create(db: Db, claims: AccessClaims, new_question: Json<NewQuestion>) -> Result<Json<Question>, Status> {
+pub async fn post_create(db: Db, claims: AccessClaims, new_question: Json<NewQuestionWithContent>) -> Result<Json<QuestionWithContent>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => create::post_create_admin(db, claims.0.user, new_question.into_inner()).await,
         _ => {
@@ -104,7 +107,7 @@ pub async fn post_create_none(_new_question: Json<NewQuestion>) -> Status {
 }
 
 #[put("/<id>", data = "<question>", rank = 101)]
-pub async fn put_update(db: Db, claims: AccessClaims, id: i32, question: Json<NewQuestion>) -> Result<Json<Question>, Status> {
+pub async fn put_update(db: Db, claims: AccessClaims, id: i32, question: Json<NewQuestionWithContent>) -> Result<Json<QuestionWithContent>, Status> {
     match claims.0.user.role.name.as_str() {
         "admin" => update::put_update_admin(db, claims.0.user, id, question.into_inner()).await,
         _ => {
