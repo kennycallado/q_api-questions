@@ -1,7 +1,7 @@
 CREATE DATABASE messages;
 CREATE DATABASE profiles;
 CREATE DATABASE users;
-CREATE DATABASE questions;
+-- CREATE DATABASE questions;
 CREATE DATABASE answers;
 CREATE DATABASE slides;
 CREATE DATABASE resources;
