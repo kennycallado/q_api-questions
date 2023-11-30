@@ -37,13 +37,9 @@ GET http://localhost:8000/api/v1/question/
 Accept: application/json
 Authorization: Bearer 
 
-GET http://localhost:8000/api/v1/question/11?lang=vlc
-
 GET http://localhost:8000/api/v1/question/1
 Accept: application/json
 Authorization: Bearer 
-
-POST http://localhost:8000/api/v1/question/multiple?lang=en
 
 POST http://localhost:8000/api/v1/question/multiple
 Accept: application/json
@@ -78,7 +74,7 @@ Content-Type: application/json
   }
 }
 
-GET http://localhost:8000/api/v1/question/6?lang=en
+GET http://localhost:8000/api/v1/question/6
 Accept: application/json
 Authorization: Bearer 
 
