@@ -1,6 +1,6 @@
 [package]
 name = "q-api-questions"
-version = "0.1.5"
+version = "0.1."
 edition = "2021"
 
 [features]
