@@ -22,14 +22,12 @@ package_name=$(cat Cargo.toml | grep 'name' | awk '{print $3}' | tr -d '"')
 version=$(cat Cargo.toml | grep 'version' | head -1 | awk '{print $3}' | tr -d '"')
 database=$(cat Cargo.toml | grep '^default' | awk '{print $3}' | grep 'db' | tr -d '",[]' )
 
-compile_zigbuild() {
-  cargo-zigbuild build --release --target $target
-}
+# compile_zigbuild() {
+#   cargo-zigbuild build --release --target $target
+# }
 
 compile_muslrust() {
-  docker run --rm -it \
-    -v $HOME/.cargo/git:/home/rust/.cargo/git \
-    -v $HOME/.cargo/registry:/home/rust/.cargo/registry \
+  podman run --rm -it \
     -v "$(pwd)":/volume clux/muslrust:stable \
     cargo build --release 
 }
@@ -42,7 +40,7 @@ mkdir -p target
 chmod -R o+w target
 
 # Build the binary
-if [ "$database" == "db_diesel" ]; then
+if [ "$database" == "db" ]; then
   compile_muslrust
 fi
 
@@ -58,50 +56,59 @@ for platform in ${platforms[@]}; do
   fi
 
   # Build the binary
-  if [ "$database" != "db_diesel" ]; then
-    compile_zigbuild
-  fi
+  # if [ "$database" != "db_diesel" ]; then
+  #   compile_zigbuild
+  # fi
 
   # build the image
-  docker build --no-cache --pull \
+  podman build --no-cache --pull \
     --platform ${platform} \
     -t kennycallado/${package_name}:${version}-${tag} \
     --build-arg PACKAGE_NAME=${package_name} \
     --build-arg TARGET=${target} \
     -f ./Containerfile .
+
+  # push the images
+  podman push kennycallado/${package_name}:${version}-${tag}
 done
 
-# push the images
-docker push -a kennycallado/${package_name}
+# create version manifest
+podman manifest create kennycallado/${package_name}:${version}
+for platform in ${platforms[@]}; do
+  tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+  podman manifest add --arch ${tag} kennycallado/${package_name}:${version} kennycallado/${package_name}:${version}-${tag}
+done
 
-# create the manifest
-docker manifest create kennycallado/${package_name}:${version} \
-  --amend kennycallado/${package_name}:${version}-amd64 \
-  --amend kennycallado/${package_name}:${version}-arm64
+# create manifest latest manifest
+podman manifest create kennycallado/${package_name}:latest
+for platform in ${platforms[@]}; do
+  tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+  podman manifest add --arch ${tag} kennycallado/${package_name}:latest kennycallado/${package_name}:${version}-${tag}
+done
 
-# manifest for latest version
-docker manifest create kennycallado/${package_name}:latest \
-  --amend kennycallado/${package_name}:${version}-amd64 \
-  --amend kennycallado/${package_name}:${version}-arm64
-
-# manifest for stable version
+# create manifest stable manifest
 if [ "$1" == "stable" ]; then
-docker manifest create kennycallado/${package_name}:stable \
-  --amend kennycallado/${package_name}:${version}-amd64 \
-  --amend kennycallado/${package_name}:${version}-arm64
+  podman manifest create kennycallado/${package_name}:stable
+  for platform in ${platforms[@]}; do
+    tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+    podman manifest add --arch ${tag} kennycallado/${package_name}:stable kennycallado/${package_name}:${version}-${tag}
+  done
+
+  # push the stable manifest
+  podman manifest push --rm kennycallado/${package_name}:stable docker://kennycallado/${package_name}:${version}
 fi
 
-# push the manifests
-docker manifest push --purge kennycallado/${package_name}:${version}
-docker manifest push --purge kennycallado/${package_name}:latest
-
-# tag the latest version # I think it has no sense
-# docker tag kennycallado/${package_name}:${version} kennycallado/${package_name}:latest
-# docker push kennycallado/${package_name}:latest
+# push the rest of the manifests
+podman manifest push --rm kennycallado/${package_name}:${version} docker://kennycallado/${package_name}:${version}
+podman manifest push --rm kennycallado/${package_name}:latest docker://kennycallado/${package_name}:${version}
 
 # remove the images
-docker rmi kennycallado/${package_name}:${version}-amd64
-docker rmi kennycallado/${package_name}:${version}-arm64
+for platform in ${platforms[@]}; do
+  tag=$(echo "${platform//\//_}" | tr -d 'linux_' | xargs -I {} echo {})
+  podman rmi kennycallado/${package_name}:${version}-${tag}
+done
 
 # remove the manifest
-docker system prune -f
+podman system prune -f
+
+exit 0

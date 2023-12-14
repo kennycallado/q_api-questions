@@ -43,7 +43,7 @@ impl<'r> FromRequest<'r> for AccessClaims {
     async fn from_request(request: &'r Request<'_>) -> Outcome<Self, Self::Error> {
         let token = match Token::from_header(request) {
             Some(token) => token,
-            None => return Outcome::Forward(rocket::http::Status::Ok), // ???
+            None => return Outcome::Forward(rocket::http::Status::Ok),
         };
 
         let claims = match token.decode() {
